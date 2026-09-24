@@ -1238,8 +1238,18 @@ function toggleGui() {
 }
 
 // ---------------- 开场 ----------------
+function enterFullscreen() {
+  try {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      const el = document.documentElement;
+      const p = el.requestFullscreen?.() ?? el.webkitRequestFullscreen?.();
+      if (p && p.catch) p.catch(() => {});
+    }
+  } catch {}
+}
 function start(withSound) {
   if (S.started) return;
+  enterFullscreen();
   S.started = true;
   document.body.classList.add('started');
   if (withSound) {

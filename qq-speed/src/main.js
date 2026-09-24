@@ -21,6 +21,15 @@ import { clamp, lerp, damp, dampAngle, wrapAngle, mulberry32, formatTime, smooth
 import { setMaxAniso } from './textures.js';
 
 const $ = (id) => document.getElementById(id);
+function enterFullscreen() {
+  try {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      const el = document.documentElement;
+      const p = el.requestFullscreen?.() ?? el.webkitRequestFullscreen?.();
+      if (p && p.catch) p.catch(() => {});
+    }
+  } catch {}
+}
 const STORE = 'feiche3d.v1';
 const DIFFS = [
   { id: 0, name: '新手', skill: [0.55, 0.75], rubber: [0.88, 1.03] },
@@ -269,6 +278,7 @@ class Game {
 
   togglePause() {
     if (this.state === 'paused') {
+      enterFullscreen();
       this.state = this.pausedFrom;
       $('pause').classList.add('hidden');
       this.last = performance.now();
@@ -435,6 +445,7 @@ class Game {
 
   startRace() {
     if (this.loading) return;
+    enterFullscreen();
     this.audio.init();
     ['menu', 'pause', 'result'].forEach((i) => $(i).classList.add('hidden'));
     this.itemMode = this.settings.mode === 'item';

@@ -198,7 +198,17 @@ export class Game {
       audio.setLowHealth(false);
     }
   }
+  fullscreen() {
+    try {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        const el = document.documentElement;
+        const p = el.requestFullscreen?.() ?? el.webkitRequestFullscreen?.();
+        if (p && p.catch) p.catch(() => {});
+      }
+    } catch { /* 忽略：无手势或不支持全屏的浏览器（如 iOS Safari） */ }
+  }
   lock() {
+    this.fullscreen();
     if (this.touchMode || this.qs.has('nolock')) { this.locked = true; return; }
     const c = document.getElementById('c');
     try {
